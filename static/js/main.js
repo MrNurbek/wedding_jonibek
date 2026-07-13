@@ -191,33 +191,46 @@ document.addEventListener('DOMContentLoaded', () => {
   _audio.loop = true;
   _audio.volume = 0.35;
 
+  const btn = document.getElementById('music-btn');
+
+  /* Telefonda touchstart musiqa boshlash uchun yaroqli emas —
+     faqat touchend / click / pointerup ishlaydi. Muvaffaqiyat
+     bo'lmaguncha tinglovchilar o'chirilmaydi. */
+  function removeGestureListeners() {
+    document.removeEventListener('touchend',  onFirstGesture);
+    document.removeEventListener('pointerup', onFirstGesture);
+    document.removeEventListener('click',     onFirstGesture);
+  }
+
+  function onFirstGesture(e) {
+    if (musicPlaying) { removeGestureListeners(); return; }
+    /* Musiqa tugmasining o'zi bosilsa — uni btn handler boshqaradi */
+    if (btn && e.target && btn.contains(e.target)) return;
+    _audio.play().then(() => {
+      musicPlaying = true;
+      updateMusicBtn();
+      removeGestureListeners();
+    }).catch(() => {});
+  }
+
   /* 1-qadam: autoplay urinib ko'ramiz */
   _audio.play().then(() => {
     musicPlaying = true;
     updateMusicBtn();
   }).catch(() => {
-    /* 2-qadam: autoplay blok — birinchi teginishda boshlaydi */
-    const onFirstTouch = () => {
-      _audio.play().then(() => {
-        musicPlaying = true;
-        updateMusicBtn();
-      }).catch(() => {});
-      document.removeEventListener('touchstart', onFirstTouch);
-      document.removeEventListener('click',      onFirstTouch);
-      document.removeEventListener('touchend',   onFirstTouch);
-    };
-    document.addEventListener('touchstart', onFirstTouch, { passive: true });
-    document.addEventListener('touchend',   onFirstTouch, { passive: true });
-    document.addEventListener('click',      onFirstTouch);
+    /* 2-qadam: autoplay blok — birinchi haqiqiy teginish tugaganda boshlaydi */
+    document.addEventListener('touchend',  onFirstGesture, { passive: true });
+    document.addEventListener('pointerup', onFirstGesture);
+    document.addEventListener('click',     onFirstGesture);
   });
 
   /* Musiqa tugmasi — play / pause */
-  const btn = document.getElementById('music-btn');
   if (!btn) return;
   btn.addEventListener('click', (e) => {
-    e.stopPropagation(); /* onFirstTouch ni qayta ishlatmasin */
+    e.stopPropagation();
+    removeGestureListeners(); /* foydalanuvchi endi o'zi boshqaradi */
     if (_audio.paused) {
-      _audio.play().then(() => { musicPlaying = true; }).catch(() => {});
+      _audio.play().then(() => { musicPlaying = true; updateMusicBtn(); }).catch(() => {});
     } else {
       _audio.pause();
       musicPlaying = false;
