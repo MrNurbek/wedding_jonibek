@@ -7,7 +7,12 @@ SECRET_KEY = 'django-insecure-shom-nuri-wedding-2026-yangi-loyiha-kalit'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    "jonibek.coderswar.uz",
+    "165.22.75.64",
+    "127.0.0.1",
+    "localhost",
+]
 CSRF_TRUSTED_ORIGINS = [
     "https://jonibek.coderswar.uz",
     "http://jonibek.coderswar.uz",
