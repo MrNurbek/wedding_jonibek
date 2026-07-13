@@ -107,6 +107,7 @@
   function unlock() {
     if (!cover.classList.contains('unlocking')) {
       cover.classList.add('unlocking');
+      startMusic(); /* ochish harakatining o'zida musiqani boshlaymiz */
       flash.classList.add('active');
       setTimeout(() => {
         flash.classList.remove('active');
@@ -126,8 +127,10 @@
     }
   }
 
-  handle.addEventListener('mousedown', e => { dragging = true; startX = e.clientX - currentX; });
-  handle.addEventListener('touchstart', e => { dragging = true; startX = e.touches[0].clientX - currentX; }, { passive: true });
+  /* Slayder ushlangan zahoti musiqani boshlashga urinamiz —
+     ochish knopkasiga bevosita bog'langan */
+  handle.addEventListener('mousedown', e => { dragging = true; startX = e.clientX - currentX; startMusic(); });
+  handle.addEventListener('touchstart', e => { dragging = true; startX = e.touches[0].clientX - currentX; startMusic(); }, { passive: true });
 
   document.addEventListener('mousemove', e => {
     if (!dragging) return;
@@ -200,9 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('music-btn');
 
   function removeGestureListeners() {
-    document.removeEventListener('touchend',  onGesture);
-    document.removeEventListener('pointerup', onGesture);
-    document.removeEventListener('click',     onGesture);
+    document.removeEventListener('touchstart',  onGesture);
+    document.removeEventListener('touchend',    onGesture);
+    document.removeEventListener('pointerdown', onGesture);
+    document.removeEventListener('pointerup',   onGesture);
+    document.removeEventListener('click',       onGesture);
   }
 
   /* Telefonda touchstart musiqa boshlash uchun yaroqli emas —
@@ -221,11 +226,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* Tinglovchilarni DARHOL ulaymiz (autoplay natijasini kutmasdan) —
-     aks holda sahifa ochilishi bilan surilgan slayder teginishi
-     o'tkazib yuborilishi mumkin edi */
-  document.addEventListener('touchend',  onGesture, { passive: true });
-  document.addEventListener('pointerup', onGesture);
-  document.addEventListener('click',     onGesture);
+     har qanday birinchi teginishda musiqa boshlanadi. touchstart/
+     pointerdown — barmoq tekkan zahoti, touchend/pointerup/click —
+     ko'tarilganda. Qaysi biri brauzerda ruxsat etilsa, o'sha ishlaydi. */
+  document.addEventListener('touchstart',  onGesture, { passive: true });
+  document.addEventListener('touchend',    onGesture, { passive: true });
+  document.addEventListener('pointerdown', onGesture);
+  document.addEventListener('pointerup',   onGesture);
+  document.addEventListener('click',       onGesture);
 
   /* Autoplay urinib ko'ramiz — kompyuterda ko'pincha ishlaydi */
   _audio.play().then(() => {
