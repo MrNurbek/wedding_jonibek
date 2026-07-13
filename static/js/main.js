@@ -144,6 +144,8 @@
   document.addEventListener('mouseup', () => {
     if (!dragging) return;
     dragging = false;
+    /* Slayder ochilgan bo'lsa — musiqani haqiqiy teginish ichida boshlaymiz */
+    if (cover.classList.contains('unlocking')) startMusic();
     if (currentX < maxDrag() * 0.9) {
       currentX = 0;
       handle.style.transition = 'left 0.3s ease';
@@ -159,6 +161,8 @@
   document.addEventListener('touchend', () => {
     if (!dragging) return;
     dragging = false;
+    /* Telefonda: barmoq ko'tarilgan zahoti — teginish ruxsati ichida — musiqa boshlanadi */
+    if (cover.classList.contains('unlocking')) startMusic();
     if (currentX < maxDrag() * 0.9) {
       currentX = 0;
       handle.style.transition = 'left 0.3s ease';
@@ -185,6 +189,8 @@ function updateMusicBtn() {
   btn.classList.toggle('playing', musicPlaying);
 }
 
+let _userStopped = false; /* foydalanuvchi tugma orqali o'zi to'xtatgan */
+
 document.addEventListener('DOMContentLoaded', () => {
   _audio = document.getElementById('bg-music');
   if (!_audio) return;
@@ -193,17 +199,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const btn = document.getElementById('music-btn');
 
-  /* Telefonda touchstart musiqa boshlash uchun yaroqli emas —
-     faqat touchend / click / pointerup ishlaydi. Muvaffaqiyat
-     bo'lmaguncha tinglovchilar o'chirilmaydi. */
   function removeGestureListeners() {
-    document.removeEventListener('touchend',  onFirstGesture);
-    document.removeEventListener('pointerup', onFirstGesture);
-    document.removeEventListener('click',     onFirstGesture);
+    document.removeEventListener('touchend',  onGesture);
+    document.removeEventListener('pointerup', onGesture);
+    document.removeEventListener('click',     onGesture);
   }
 
-  function onFirstGesture(e) {
-    if (musicPlaying) { removeGestureListeners(); return; }
+  /* Telefonda touchstart musiqa boshlash uchun yaroqli emas —
+     faqat touchend / pointerup / click ishlaydi. Musiqa
+     boshlanmaguncha tinglovchilar o'chirilmaydi — har bir
+     teginishda qayta uriniladi. */
+  function onGesture(e) {
+    if (musicPlaying || _userStopped) { removeGestureListeners(); return; }
     /* Musiqa tugmasining o'zi bosilsa — uni btn handler boshqaradi */
     if (btn && e.target && btn.contains(e.target)) return;
     _audio.play().then(() => {
@@ -213,16 +220,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }).catch(() => {});
   }
 
-  /* 1-qadam: autoplay urinib ko'ramiz */
+  /* Tinglovchilarni DARHOL ulaymiz (autoplay natijasini kutmasdan) —
+     aks holda sahifa ochilishi bilan surilgan slayder teginishi
+     o'tkazib yuborilishi mumkin edi */
+  document.addEventListener('touchend',  onGesture, { passive: true });
+  document.addEventListener('pointerup', onGesture);
+  document.addEventListener('click',     onGesture);
+
+  /* Autoplay urinib ko'ramiz — kompyuterda ko'pincha ishlaydi */
   _audio.play().then(() => {
     musicPlaying = true;
     updateMusicBtn();
-  }).catch(() => {
-    /* 2-qadam: autoplay blok — birinchi haqiqiy teginish tugaganda boshlaydi */
-    document.addEventListener('touchend',  onFirstGesture, { passive: true });
-    document.addEventListener('pointerup', onFirstGesture);
-    document.addEventListener('click',     onFirstGesture);
-  });
+    removeGestureListeners();
+  }).catch(() => { /* telefon blokladi — teginishda onGesture boshlaydi */ });
 
   /* Musiqa tugmasi — play / pause */
   if (!btn) return;
@@ -230,10 +240,12 @@ document.addEventListener('DOMContentLoaded', () => {
     e.stopPropagation();
     removeGestureListeners(); /* foydalanuvchi endi o'zi boshqaradi */
     if (_audio.paused) {
+      _userStopped = false;
       _audio.play().then(() => { musicPlaying = true; updateMusicBtn(); }).catch(() => {});
     } else {
       _audio.pause();
       musicPlaying = false;
+      _userStopped = true;
     }
     updateMusicBtn();
   });
@@ -241,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* unlock dan keyin ham chaqirilishi uchun export */
 function startMusic() {
-  if (!_audio || !_audio.paused) return;
+  if (!_audio || !_audio.paused || _userStopped) return;
   _audio.play().then(() => {
     musicPlaying = true;
     updateMusicBtn();
