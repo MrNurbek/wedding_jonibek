@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "wedding-server",
+      "runtimeExecutable": "C:\\Users\\XOQON\\OneDrive\\Desktop\\wedding_django_project\\.venv\\Scripts\\python.exe",
+      "runtimeArgs": ["C:\\Users\\XOQON\\OneDrive\\Desktop\\wedding_yangi_loyiha\\manage.py", "runserver", "8001"],
+      "port": 8001
+    }
+  ]
+}

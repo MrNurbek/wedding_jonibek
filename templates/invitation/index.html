@@ -1,0 +1,624 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ cfg.groom_name }} & {{ cfg.bride_name }} — To'y Taklifnomasi</title>
+  <meta name="description" content="{{ cfg.groom_name }} va {{ cfg.bride_name }} to'yiga taklif etamiz." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="{% static 'css/rose-theme.css' %}" />
+</head>
+<body>
+
+<!-- FLASH -->
+<div class="cover-flash" id="cover-flash"></div>
+
+<!-- =============================================
+     CORNER ROSE COMPOSITIONS (fixed, 4 corners)
+     ============================================= -->
+
+<!-- Top-Left Rose -->
+<div class="rose-corner tl" id="rose-tl">
+  <svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Branches -->
+    <path d="M10 10 Q60 40 100 90 Q130 130 160 200" stroke="#4A6741" stroke-width="2" fill="none" opacity="0.7"/>
+    <path d="M10 10 Q50 30 80 70 Q100 100 110 150" stroke="#6B8F68" stroke-width="1.5" fill="none" opacity="0.5"/>
+    <path d="M30 5 Q55 35 70 80" stroke="#4A6741" stroke-width="1.2" fill="none" opacity="0.4"/>
+    <!-- Leaves -->
+    <ellipse cx="55" cy="55" rx="18" ry="9" fill="#4A6741" opacity="0.75" transform="rotate(-30 55 55)"/>
+    <ellipse cx="80" cy="85" rx="14" ry="7" fill="#6B8F68" opacity="0.65" transform="rotate(-45 80 85)"/>
+    <ellipse cx="105" cy="115" rx="16" ry="8" fill="#4A6741" opacity="0.7" transform="rotate(-20 105 115)"/>
+    <ellipse cx="45" cy="80" rx="12" ry="6" fill="#6B8F68" opacity="0.55" transform="rotate(-60 45 80)"/>
+    <!-- Main rose 1 (bordo, large) -->
+    <circle cx="90" cy="100" r="28" fill="#8B2635" opacity="0.15"/>
+    <path d="M90 72 C100 78 112 85 108 100 C104 115 90 120 78 112 C66 104 65 88 75 80 C82 74 90 72 90 72Z" fill="#6B1A2A"/>
+    <path d="M90 72 C82 68 70 72 68 85 C66 98 76 110 90 110 C100 110 110 100 108 88 C106 76 98 70 90 72Z" fill="#8B2635" opacity="0.9"/>
+    <path d="M90 80 C98 78 106 84 104 95 C102 106 92 112 82 108 C74 104 72 94 78 87 C83 81 90 80 90 80Z" fill="#C4536A" opacity="0.8"/>
+    <path d="M90 88 C96 86 101 92 99 99 C97 106 90 109 84 106 C79 103 78 96 82 91 C85 87 90 88 90 88Z" fill="#E8799A" opacity="0.7"/>
+    <circle cx="90" cy="97" r="5" fill="#D4A843" opacity="0.9"/>
+    <!-- Small rose 2 (pink) -->
+    <path d="M35 35 C41 30 49 32 50 40 C51 48 44 54 36 52 C29 50 27 42 32 37 C34 35 35 35 35 35Z" fill="#9B1B30"/>
+    <path d="M35 35 C29 38 26 46 32 52 C38 58 48 56 52 48 C56 40 50 32 42 31 C38 30 35 35 35 35Z" fill="#C4536A" opacity="0.85"/>
+    <path d="M36 40 C41 37 47 41 46 47 C45 53 38 55 33 52 C29 49 30 43 34 40 C35 39 36 40 36 40Z" fill="#E8799A" opacity="0.7"/>
+    <circle cx="40" cy="46" r="3.5" fill="#D4A843" opacity="0.9"/>
+    <!-- Small rose 3 (deep red) -->
+    <path d="M145 185 C152 180 161 183 162 192 C163 201 156 208 148 205 C140 202 139 193 144 187 C146 185 145 185 145 185Z" fill="#6B1A2A"/>
+    <path d="M145 185 C138 189 136 198 143 205 C150 212 162 208 165 199 C168 190 160 182 151 182 C148 182 145 185 145 185Z" fill="#8B2635" opacity="0.85"/>
+    <path d="M147 191 C153 188 159 193 158 200 C157 207 149 210 143 206 C138 202 140 195 145 191 C146 190 147 191 147 191Z" fill="#C4536A" opacity="0.7"/>
+    <circle cx="152" cy="198" r="3" fill="#D4A843" opacity="0.85"/>
+    <!-- Scattered petals -->
+    <ellipse cx="120" cy="60" rx="6" ry="4" fill="#C4536A" opacity="0.45" transform="rotate(20 120 60)"/>
+    <ellipse cx="65" cy="135" rx="5" ry="3" fill="#E8A0B0" opacity="0.4" transform="rotate(-15 65 135)"/>
+    <ellipse cx="170" cy="155" rx="7" ry="4" fill="#9B1B30" opacity="0.35" transform="rotate(35 170 155)"/>
+    <!-- Gold sparkles -->
+    <circle cx="130" cy="45" r="1.5" fill="#D4A843" opacity="0.8"/>
+    <circle cx="72" cy="48" r="1" fill="#D4A843" opacity="0.6"/>
+    <circle cx="115" cy="150" r="2" fill="#C9A46E" opacity="0.7"/>
+    <circle cx="50" cy="110" r="1.2" fill="#D4A843" opacity="0.5"/>
+  </svg>
+</div>
+
+<!-- Top-Right Rose -->
+<div class="rose-corner tr" id="rose-tr">
+  <svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform:scaleX(-1)">
+    <path d="M10 10 Q60 40 100 90 Q130 130 160 200" stroke="#4A6741" stroke-width="2" fill="none" opacity="0.7"/>
+    <path d="M10 10 Q50 30 80 70 Q100 100 110 150" stroke="#6B8F68" stroke-width="1.5" fill="none" opacity="0.5"/>
+    <path d="M30 5 Q55 35 70 80" stroke="#4A6741" stroke-width="1.2" fill="none" opacity="0.4"/>
+    <ellipse cx="55" cy="55" rx="18" ry="9" fill="#4A6741" opacity="0.75" transform="rotate(-30 55 55)"/>
+    <ellipse cx="80" cy="85" rx="14" ry="7" fill="#6B8F68" opacity="0.65" transform="rotate(-45 80 85)"/>
+    <ellipse cx="105" cy="115" rx="16" ry="8" fill="#4A6741" opacity="0.7" transform="rotate(-20 105 115)"/>
+    <ellipse cx="45" cy="80" rx="12" ry="6" fill="#6B8F68" opacity="0.55" transform="rotate(-60 45 80)"/>
+    <!-- Main rose (pink-red, top right gets slightly different hue) -->
+    <circle cx="90" cy="100" r="28" fill="#9B1B30" opacity="0.12"/>
+    <path d="M90 72 C100 78 112 85 108 100 C104 115 90 120 78 112 C66 104 65 88 75 80 C82 74 90 72 90 72Z" fill="#9B1B30"/>
+    <path d="M90 72 C82 68 70 72 68 85 C66 98 76 110 90 110 C100 110 110 100 108 88 C106 76 98 70 90 72Z" fill="#C4536A" opacity="0.9"/>
+    <path d="M90 80 C98 78 106 84 104 95 C102 106 92 112 82 108 C74 104 72 94 78 87 C83 81 90 80 90 80Z" fill="#E8799A" opacity="0.85"/>
+    <path d="M90 88 C96 86 101 92 99 99 C97 106 90 109 84 106 C79 103 78 96 82 91 C85 87 90 88 90 88Z" fill="#F0B8C8" opacity="0.7"/>
+    <circle cx="90" cy="97" r="5" fill="#D4A843" opacity="0.9"/>
+    <path d="M35 35 C41 30 49 32 50 40 C51 48 44 54 36 52 C29 50 27 42 32 37 C34 35 35 35 35 35Z" fill="#8B2635"/>
+    <path d="M35 35 C29 38 26 46 32 52 C38 58 48 56 52 48 C56 40 50 32 42 31 C38 30 35 35 35 35Z" fill="#C4536A" opacity="0.85"/>
+    <path d="M36 40 C41 37 47 41 46 47 C45 53 38 55 33 52 C29 49 30 43 34 40 C35 39 36 40 36 40Z" fill="#E8799A" opacity="0.7"/>
+    <circle cx="40" cy="46" r="3.5" fill="#D4A843" opacity="0.9"/>
+    <path d="M145 185 C152 180 161 183 162 192 C163 201 156 208 148 205 C140 202 139 193 144 187 C146 185 145 185 145 185Z" fill="#6B1A2A"/>
+    <path d="M145 185 C138 189 136 198 143 205 C150 212 162 208 165 199 C168 190 160 182 151 182 C148 182 145 185 145 185Z" fill="#8B2635" opacity="0.85"/>
+    <path d="M147 191 C153 188 159 193 158 200 C157 207 149 210 143 206 C138 202 140 195 145 191 C146 190 147 191 147 191Z" fill="#C4536A" opacity="0.7"/>
+    <circle cx="152" cy="198" r="3" fill="#D4A843" opacity="0.85"/>
+    <ellipse cx="120" cy="60" rx="6" ry="4" fill="#C4536A" opacity="0.45" transform="rotate(20 120 60)"/>
+    <ellipse cx="65" cy="135" rx="5" ry="3" fill="#E8A0B0" opacity="0.4" transform="rotate(-15 65 135)"/>
+    <circle cx="130" cy="45" r="1.5" fill="#D4A843" opacity="0.8"/>
+    <circle cx="72" cy="48" r="1" fill="#D4A843" opacity="0.6"/>
+    <circle cx="115" cy="150" r="2" fill="#C9A46E" opacity="0.7"/>
+  </svg>
+</div>
+
+<!-- Bottom-Left Rose -->
+<div class="rose-corner bl" id="rose-bl">
+  <svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform:scaleY(-1)">
+    <path d="M10 10 Q60 40 100 90 Q130 130 160 200" stroke="#4A6741" stroke-width="2" fill="none" opacity="0.6"/>
+    <path d="M30 5 Q55 35 70 80" stroke="#4A6741" stroke-width="1.2" fill="none" opacity="0.4"/>
+    <ellipse cx="55" cy="55" rx="18" ry="9" fill="#4A6741" opacity="0.7" transform="rotate(-30 55 55)"/>
+    <ellipse cx="80" cy="85" rx="14" ry="7" fill="#6B8F68" opacity="0.6" transform="rotate(-45 80 85)"/>
+    <ellipse cx="42" cy="78" rx="12" ry="6" fill="#4A6741" opacity="0.55" transform="rotate(-60 42 78)"/>
+    <circle cx="88" cy="98" r="28" fill="#E8A0B0" opacity="0.1"/>
+    <path d="M88 70 C98 76 110 83 106 98 C102 113 88 118 76 110 C64 102 63 86 73 78 C80 72 88 70 88 70Z" fill="#6B1A2A"/>
+    <path d="M88 70 C80 66 68 70 66 83 C64 96 74 108 88 108 C98 108 108 98 106 86 C104 74 96 68 88 70Z" fill="#8B2635" opacity="0.9"/>
+    <path d="M88 78 C96 76 104 82 102 93 C100 104 90 110 80 106 C72 102 70 92 76 85 C81 79 88 78 88 78Z" fill="#C4536A" opacity="0.8"/>
+    <path d="M88 86 C94 84 99 90 97 97 C95 104 88 107 82 104 C77 101 76 94 80 89 C83 85 88 86 88 86Z" fill="#E8A0B0" opacity="0.75"/>
+    <circle cx="88" cy="95" r="5" fill="#D4A843" opacity="0.9"/>
+    <path d="M33 33 C39 28 47 30 48 38 C49 46 42 52 34 50 C27 48 25 40 30 35 C32 33 33 33 33 33Z" fill="#9B1B30"/>
+    <path d="M33 33 C27 36 24 44 30 50 C36 56 46 54 50 46 C54 38 48 30 40 29 C36 28 33 33 33 33Z" fill="#E8799A" opacity="0.85"/>
+    <circle cx="38" cy="44" r="3.5" fill="#D4A843" opacity="0.9"/>
+    <path d="M143 183 C150 178 159 181 160 190 C161 199 154 206 146 203 C138 200 137 191 142 185 C144 183 143 183 143 183Z" fill="#6B1A2A"/>
+    <path d="M143 183 C136 187 134 196 141 203 C148 210 160 206 163 197 C166 188 158 180 149 180 C146 180 143 183 143 183Z" fill="#8B2635" opacity="0.8"/>
+    <circle cx="150" cy="196" r="3" fill="#D4A843" opacity="0.85"/>
+    <ellipse cx="118" cy="58" rx="6" ry="4" fill="#C4536A" opacity="0.4" transform="rotate(20 118 58)"/>
+    <circle cx="128" cy="43" r="1.5" fill="#D4A843" opacity="0.75"/>
+    <circle cx="113" cy="148" r="2" fill="#C9A46E" opacity="0.65"/>
+  </svg>
+</div>
+
+<!-- Bottom-Right Rose -->
+<div class="rose-corner br" id="rose-br">
+  <svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform:scale(-1,-1)">
+    <path d="M10 10 Q60 40 100 90 Q130 130 160 200" stroke="#4A6741" stroke-width="2" fill="none" opacity="0.65"/>
+    <path d="M10 10 Q50 30 80 70 Q100 100 110 150" stroke="#6B8F68" stroke-width="1.5" fill="none" opacity="0.5"/>
+    <ellipse cx="55" cy="55" rx="18" ry="9" fill="#4A6741" opacity="0.72" transform="rotate(-30 55 55)"/>
+    <ellipse cx="80" cy="85" rx="14" ry="7" fill="#6B8F68" opacity="0.62" transform="rotate(-45 80 85)"/>
+    <ellipse cx="105" cy="112" rx="16" ry="8" fill="#4A6741" opacity="0.68" transform="rotate(-20 105 112)"/>
+    <circle cx="91" cy="101" r="28" fill="#C4536A" opacity="0.1"/>
+    <path d="M91 73 C101 79 113 86 109 101 C105 116 91 121 79 113 C67 105 66 89 76 81 C83 75 91 73 91 73Z" fill="#8B2635"/>
+    <path d="M91 73 C83 69 71 73 69 86 C67 99 77 111 91 111 C101 111 111 101 109 89 C107 77 99 71 91 73Z" fill="#9B1B30" opacity="0.88"/>
+    <path d="M91 81 C99 79 107 85 105 96 C103 107 93 113 83 109 C75 105 73 95 79 88 C84 82 91 81 91 81Z" fill="#C4536A" opacity="0.82"/>
+    <path d="M91 89 C97 87 102 93 100 100 C98 107 91 110 85 107 C80 104 79 97 83 92 C86 88 91 89 91 89Z" fill="#E8799A" opacity="0.72"/>
+    <circle cx="91" cy="98" r="5" fill="#D4A843" opacity="0.9"/>
+    <path d="M34 34 C40 29 48 31 49 39 C50 47 43 53 35 51 C28 49 26 41 31 36 C33 34 34 34 34 34Z" fill="#6B1A2A"/>
+    <path d="M34 34 C28 37 25 45 31 51 C37 57 47 55 51 47 C55 39 49 31 41 30 C37 29 34 34 34 34Z" fill="#C4536A" opacity="0.85"/>
+    <circle cx="39" cy="45" r="3.5" fill="#D4A843" opacity="0.9"/>
+    <path d="M146 186 C153 181 162 184 163 193 C164 202 157 209 149 206 C141 203 140 194 145 188 C147 186 146 186 146 186Z" fill="#9B1B30"/>
+    <path d="M146 186 C139 190 137 199 144 206 C151 213 163 209 166 200 C169 191 161 183 152 183 C149 183 146 186 146 186Z" fill="#8B2635" opacity="0.82"/>
+    <circle cx="151" cy="199" r="3" fill="#D4A843" opacity="0.85"/>
+    <ellipse cx="119" cy="61" rx="6" ry="4" fill="#E8799A" opacity="0.42" transform="rotate(20 119 61)"/>
+    <circle cx="131" cy="46" r="1.5" fill="#D4A843" opacity="0.8"/>
+    <circle cx="114" cy="151" r="2" fill="#C9A46E" opacity="0.68"/>
+    <circle cx="70" cy="49" r="1" fill="#D4A843" opacity="0.55"/>
+  </svg>
+</div>
+
+<!-- Falling petals (cover only) -->
+<div class="petal-rain" id="petal-rain">
+  <div class="petal"></div>
+  <div class="petal"></div>
+  <div class="petal"></div>
+  <div class="petal"></div>
+  <div class="petal"></div>
+  <div class="petal"></div>
+  <div class="petal"></div>
+  <div class="petal"></div>
+  <div class="petal"></div>
+  <div class="petal"></div>
+</div>
+
+<!-- =============================================
+     UNLOCK EKRANI
+     ============================================= -->
+<div id="cover" {% if cfg.cover_bg %}style="background-image: url('{{ cfg.cover_bg.url }}'); background-size: cover; background-position: center;"{% endif %}>
+  <div class="cover-bg-overlay" {% if cfg.cover_bg %}style="position:absolute;inset:0;background:rgba(253,240,242,0.55);z-index:0;"{% endif %}></div>
+  <canvas class="cover-particles" id="particles-canvas"></canvas>
+
+  <div class="cover-content">
+    <div class="cover-monogram">
+      <span class="monogram-letter">{{ cfg.groom_name|first }}{{ cfg.bride_name|first }}</span>
+    </div>
+
+    <div class="cover-names">
+      {{ cfg.groom_name }}
+      <span class="cover-amp">&</span>
+      {{ cfg.bride_name }}
+    </div>
+
+    {% if cfg.wedding_date %}
+    <div class="cover-date">
+      {{ cfg.wedding_day_name }} · {{ cfg.wedding_date|date:"d · m · Y" }}
+    </div>
+    {% endif %}
+
+    {% if cfg.ayat_text %}
+    <div class="cover-ayat">
+      {{ cfg.ayat_text }}
+      {% if cfg.ayat_ref %}<br><em style="color:var(--champagne);font-size:11px;">— {{ cfg.ayat_ref }}</em>{% endif %}
+    </div>
+    {% endif %}
+
+    <div class="unlock-track" id="unlock-track">
+      <div class="unlock-fill" id="unlock-fill"></div>
+      <div class="unlock-ripple"></div>
+      <div class="unlock-handle" id="unlock-handle">→</div>
+      <div class="unlock-text">Suring va oching</div>
+    </div>
+  </div>
+</div>
+
+<!-- MUSIQA -->
+<audio id="bg-music" loop preload="none">
+  <source src="{% static 'audio/music.mp3' %}" type="audio/mpeg" />
+</audio>
+<button class="music-btn" id="music-btn" title="Musiqa">♪</button>
+
+<!-- NAV -->
+<nav id="main-nav" class="locked-hidden">
+  <a href="#hero" class="nav-brand">{{ cfg.groom_name }} & {{ cfg.bride_name }}</a>
+  <ul class="nav-links">
+    <li><a href="#invitation">Taklif</a></li>
+    <li><a href="#date-section">Sana</a></li>
+    <li><a href="#program">Dastur</a></li>
+    <li><a href="#venue">Joy</a></li>
+    <li><a href="#maps">Xarita</a></li>
+    <li><a href="#rsvp">Javob</a></li>
+  </ul>
+</nav>
+
+<!-- STICKY CTA -->
+<div class="sticky-cta locked-hidden" id="sticky-cta">
+  <a href="#rsvp">Ishtirok etishni tasdiqlash</a>
+</div>
+
+<!-- =============================================
+     HERO
+     ============================================= -->
+<section id="hero" class="locked-hidden">
+  <div class="hero-bg-img" id="hero-bg"
+    {% if cfg.hero_bg %}style="background-image: url('{{ cfg.hero_bg.url }}')"{% endif %}>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Sizni hurmat bilan taklif etamiz</div>
+    <div class="hero-names">
+      {{ cfg.groom_name }}
+      <span class="amp">&</span>
+      {{ cfg.bride_name }}
+    </div>
+    {% if cfg.wedding_date %}
+    <div class="hero-date-badge">
+      <span>{{ cfg.wedding_day_name }}</span>
+      <span class="divider">✦</span>
+      <span>{{ cfg.wedding_date|date:"d MMMM Y" }}</span>
+      {% if cfg.wedding_time %}
+      <span class="divider">✦</span>
+      <span>{{ cfg.wedding_time|time:"H:i" }}</span>
+      {% endif %}
+    </div>
+    {% endif %}
+    <div class="scroll-cue">
+      <div class="scroll-line"></div>
+      <span>Pastga aylantiring</span>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     INVITATION
+     ============================================= -->
+<section id="invitation" class="section section-ivory locked-hidden" {% if cfg.invitation_bg %}style="background-image: url('{{ cfg.invitation_bg.url }}'); background-size: cover; background-position: center; background-attachment: fixed;"{% endif %}>
+  <div class="section-header reveal">
+    <span class="section-tag">Aziz Mehmonlar</span>
+    <h2 class="section-title dark">Sizni To'yimizga<br>Taklif Etamiz</h2>
+    <div class="gold-line"></div>
+  </div>
+
+  <div class="invite-card reveal-scale">
+    <div class="invite-greeting">Qadrli azizlarimiz!</div>
+    <div class="invite-ornament">✦ ✦ ✦</div>
+    <div class="invite-main">{{ cfg.invite_message }}</div>
+    <div class="invite-sub">{{ cfg.invite_sub }}</div>
+    <div class="invite-ornament" style="opacity:0.3;">— ◆ —</div>
+    {% if cfg.ayat_text %}
+    <div class="invite-ayat">
+      {{ cfg.ayat_text }}
+      {% if cfg.ayat_ref %}<br><em style="color:var(--champagne);">— {{ cfg.ayat_ref }}</em>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- =============================================
+     DATE & COUNTDOWN
+     ============================================= -->
+<section id="date-section" class="section section-blush locked-hidden" {% if cfg.date_bg %}style="background-image: url('{{ cfg.date_bg.url }}'); background-size: cover; background-position: center; background-attachment: fixed;"{% endif %}>
+  <div class="section-header reveal">
+    <span class="section-tag">To'y Kuni</span>
+    <h2 class="section-title dark">Muqaddas Sana</h2>
+    <div class="gold-line"></div>
+  </div>
+
+  {% if cfg.wedding_date %}
+  <div class="reveal">
+    <div class="date-card">
+      <div class="date-display">{{ cfg.wedding_day_name }}</div>
+      <div class="date-big">{{ cfg.wedding_date|date:"d" }}</div>
+      <div class="date-month">{{ cfg.wedding_date|date:"F" }}</div>
+      <div class="date-year">{{ cfg.wedding_date|date:"Y" }}</div>
+
+      {% if wedding_date_iso %}
+      <input type="hidden" id="wedding-date-iso" value="{{ wedding_date_iso }}" />
+      <div class="countdown-grid">
+        <div class="countdown-cell">
+          <span class="countdown-num" id="cd-days">00</span>
+          <span class="countdown-label">Kun</span>
+        </div>
+        <div class="countdown-cell">
+          <span class="countdown-num" id="cd-hours">00</span>
+          <span class="countdown-label">Soat</span>
+        </div>
+        <div class="countdown-cell">
+          <span class="countdown-num" id="cd-mins">00</span>
+          <span class="countdown-label">Daqiqa</span>
+        </div>
+        <div class="countdown-cell">
+          <span class="countdown-num" id="cd-secs">00</span>
+          <span class="countdown-label">Soniya</span>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if cfg.wedding_time %}
+      <div class="wedding-time-badge">
+        <span class="clock-icon">⏰</span>
+        <span>Boshlanish vaqti: {{ cfg.wedding_time|time:"H:i" }}</span>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% else %}
+  <p style="text-align:center;color:rgba(107,26,42,0.4);">Sana hali belgilanmagan.</p>
+  {% endif %}
+</section>
+
+<!-- =============================================
+     PROGRAM
+     ============================================= -->
+<section id="program" class="section section-cream locked-hidden" {% if cfg.program_bg %}style="background-image: url('{{ cfg.program_bg.url }}'); background-size: cover; background-position: center; background-attachment: fixed;"{% endif %}>
+  <div class="section-header reveal">
+    <span class="section-tag">Tadbirlar</span>
+    <h2 class="section-title dark">To'y Dasturi</h2>
+    <div class="gold-line"></div>
+  </div>
+
+  <div class="program-list">
+    {% if program %}
+      {% for item in program %}
+      <div class="program-item">
+        <div class="prog-time">{{ item.time }}</div>
+        <div class="prog-dot">{{ item.icon }}</div>
+        <div class="prog-text">
+          <div class="prog-event">{{ item.event }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="program-item">
+        <div class="prog-time">18:00</div>
+        <div class="prog-dot">🥂</div>
+        <div class="prog-text"><div class="prog-event">Mehmonlarni qabul qilish</div></div>
+      </div>
+      <div class="program-item">
+        <div class="prog-time">18:30</div>
+        <div class="prog-dot">💍</div>
+        <div class="prog-text"><div class="prog-event">Nikoh marosimi</div></div>
+      </div>
+      <div class="program-item">
+        <div class="prog-time">19:00</div>
+        <div class="prog-dot">🍽️</div>
+        <div class="prog-text"><div class="prog-event">Ziyofat dasturhoni</div></div>
+      </div>
+      <div class="program-item">
+        <div class="prog-time">21:00</div>
+        <div class="prog-dot">✨</div>
+        <div class="prog-text"><div class="prog-event">Ko'ngil ochar tadbirlar</div></div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- =============================================
+     VENUE
+     ============================================= -->
+<section id="venue" class="section section-ivory locked-hidden" {% if cfg.venue_bg %}style="background-image: url('{{ cfg.venue_bg.url }}'); background-size: cover; background-position: center; background-attachment: fixed;"{% endif %}>
+  <div class="section-header reveal">
+    <span class="section-tag">Manzil</span>
+    <h2 class="section-title dark">To'y Joyi</h2>
+    <div class="gold-line"></div>
+  </div>
+
+  <div class="venue-grid">
+    <div class="venue-info reveal-left">
+      <div class="venue-name-big">{{ cfg.venue_name }}</div>
+
+      <div class="venue-detail">
+        <div class="venue-detail-icon">📍</div>
+        <div class="venue-detail-text">
+          <strong>Manzil</strong>
+          <span>{{ cfg.venue_address }}</span>
+        </div>
+      </div>
+
+      {% if cfg.venue_phone %}
+      <div class="venue-detail">
+        <div class="venue-detail-icon">📞</div>
+        <div class="venue-detail-text">
+          <strong>Telefon</strong>
+          <span>{{ cfg.venue_phone }}</span>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if cfg.wedding_date %}
+      <div class="venue-detail">
+        <div class="venue-detail-icon">📅</div>
+        <div class="venue-detail-text">
+          <strong>Sana</strong>
+          <span>{{ cfg.wedding_day_name }}, {{ cfg.wedding_date|date:"d F Y" }}{% if cfg.wedding_time %} — {{ cfg.wedding_time|time:"H:i" }}{% endif %}</span>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="venue-gallery-grid reveal-right">
+      {% if gallery %}
+        {% for img in gallery %}
+        <img src="{{ img.image.url }}" alt="{{ img.caption|default:img.label }}" loading="lazy" />
+        {% endfor %}
+      {% else %}
+        <div class="no-gallery-placeholder">To'y joyi rasmlari</div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     MAPS
+     ============================================= -->
+<section id="maps" class="section section-cream locked-hidden" {% if cfg.maps_bg %}style="background-image: url('{{ cfg.maps_bg.url }}'); background-size: cover; background-position: center; background-attachment: fixed;"{% endif %}>
+  <div class="section-header reveal">
+    <span class="section-tag">Xarita</span>
+    <h2 class="section-title dark">Bizni Toping</h2>
+    <div class="gold-line"></div>
+  </div>
+
+  <div class="maps-grid">
+    <div class="map-embed-wrapper reveal-left">
+      {% if cfg.google_maps_embed %}
+        <iframe src="{{ cfg.google_maps_embed }}" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      {% else %}
+        <div class="map-no-embed">
+          <span class="map-icon">🗺️</span>
+          <span>Xarita manzili sozlamalarda kiritilmagan</span>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="map-info reveal-right">
+      <div class="map-venue-name">{{ cfg.venue_name }}</div>
+      <div class="map-address">{{ cfg.venue_address }}</div>
+      <div class="map-btns">
+        {% if cfg.google_maps_url %}
+        <a href="{{ cfg.google_maps_url }}" target="_blank" rel="noopener" class="btn-map google">
+          🗺 Google Maps
+        </a>
+        {% endif %}
+        {% if cfg.yandex_maps_url %}
+        <a href="{{ cfg.yandex_maps_url }}" target="_blank" rel="noopener" class="btn-map yandex">
+          🧭 Yandex Xarita
+        </a>
+        {% endif %}
+        {% if not cfg.google_maps_url and not cfg.yandex_maps_url %}
+        <span style="color:rgba(107,26,42,0.4);font-size:13px;">Xarita havolalari sozlamalarda kiritilmagan</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================
+     RSVP
+     ============================================= -->
+<section id="rsvp" class="section section-blush locked-hidden">
+  <div class="section-header reveal">
+    <span class="section-tag">Ishtirok</span>
+    <h2 class="section-title dark">Javobingizni Bildiring</h2>
+    <div class="gold-line"></div>
+  </div>
+
+  <div class="rsvp-container reveal">
+    {% csrf_token %}
+    <form id="rsvp-form" novalidate>
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label class="form-label" for="rsvp-name">Ismingiz</label>
+        <input type="text" class="form-input" id="rsvp-name" placeholder="To'liq ismingizni kiriting" autocomplete="name" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Mehmonlar soni</label>
+        <div class="counter-row">
+          <button type="button" class="counter-btn" id="btn-minus">−</button>
+          <span class="counter-num" id="count-display">1</span>
+          <button type="button" class="counter-btn" id="btn-plus">+</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Kelasizmi?</label>
+        <div class="status-group">
+          <button type="button" class="status-btn active-yes" data-value="yes">✓ Ha, kelaman</button>
+          <button type="button" class="status-btn" data-value="no">✗ Kela olmayman</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="rsvp-message">Xabar (ixtiyoriy)</label>
+        <textarea class="form-input" id="rsvp-message" placeholder="Tabrik yoki eslatma..."></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit" id="rsvp-submit">Javobni Yuborish</button>
+    </form>
+  </div>
+</section>
+
+<!-- =============================================
+     GUESTS
+     ============================================= -->
+<section id="guests" class="section section-ivory locked-hidden">
+  <div class="section-header reveal">
+    <span class="section-tag">Mehmonlar</span>
+    <h2 class="section-title dark">Ro'yxat</h2>
+    <div class="gold-line"></div>
+  </div>
+
+  <div class="stats-row reveal">
+    <div class="stat-card">
+      <div class="stat-num" id="stat-total">{{ total }}</div>
+      <div class="stat-label">Jami Mehmon</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-yes">{{ yes_count }}</div>
+      <div class="stat-label">Keladi</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-no">{{ no_count }}</div>
+      <div class="stat-label">Kela olmaydi</div>
+    </div>
+  </div>
+
+  {% if rsvps %}
+  <div class="guests-table-wrap reveal">
+    <table class="guests-table">
+      <thead>
+        <tr>
+          <th>Ism</th>
+          <th>Mehmon</th>
+          <th>Holat</th>
+          <th>Xabar</th>
+        </tr>
+      </thead>
+      <tbody id="guests-tbody">
+        {% for r in rsvps %}
+        <tr>
+          <td>{{ r.name }}</td>
+          <td>{{ r.guest_count }}</td>
+          <td>
+            {% if r.status == 'yes' %}
+              <span class="badge badge-yes">Keladi</span>
+            {% else %}
+              <span class="badge badge-no">Kela olmaydi</span>
+            {% endif %}
+          </td>
+          <td>{{ r.message|default:"—" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div id="guests-tbody" style="display:none;"></div>
+  <p class="reveal" style="text-align:center;color:rgba(107,26,42,0.4);font-size:14px;">Hali hech kim javob bermagan.</p>
+  {% endif %}
+</section>
+
+<!-- =============================================
+     FOOTER
+     ============================================= -->
+<footer class="locked-hidden">
+  <div class="footer-names">{{ cfg.groom_name }} & {{ cfg.bride_name }}</div>
+  {% if cfg.wedding_date %}
+  <div class="footer-date">{{ cfg.wedding_date|date:"d · m · Y" }}</div>
+  {% endif %}
+  <ul class="footer-nav">
+    <li><a href="#hero">Bosh Sahifa</a></li>
+    <li><a href="#program">Dastur</a></li>
+    <li><a href="#venue">Joy</a></li>
+    <li><a href="#maps">Xarita</a></li>
+    <li><a href="#rsvp">Javob</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 · {{ cfg.groom_name }} & {{ cfg.bride_name }} · Barcha huquqlar himoyalangan</div>
+</footer>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="success-modal">
+  <div class="modal-card">
+    <div class="modal-check">✓</div>
+    <div class="modal-title">Rahmat!</div>
+    <div class="modal-text">
+      Javobingiz muvaffaqiyatli qabul qilindi.<br>
+      To'yimizda ko'rishguncha saboursizlik bilan kutyapmiz!
+    </div>
+    <button class="modal-close" id="modal-close">Yaxshi</button>
+  </div>
+</div>
+
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/rose-anim.js' %}"></script>
+</body>
+</html>
