@@ -8,7 +8,11 @@ SECRET_KEY = 'django-insecure-shom-nuri-wedding-2026-yangi-loyiha-kalit'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
+CSRF_TRUSTED_ORIGINS = [
+    "https://jonibek.coderswar.uz",
+    "http://jonibek.coderswar.uz",
+]
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
