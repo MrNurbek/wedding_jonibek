@@ -210,19 +210,27 @@ document.addEventListener('DOMContentLoaded', () => {
     document.removeEventListener('click',       onGesture);
   }
 
-  /* Telefonda touchstart musiqa boshlash uchun yaroqli emas —
-     faqat touchend / pointerup / click ishlaydi. Musiqa
-     boshlanmaguncha tinglovchilar o'chirilmaydi — har bir
-     teginishda qayta uriniladi. */
+  /* Har qanday birinchi teginishda: ovozsiz chalinayotgan bo'lsa —
+     ovozini ochamiz, to'xtab turgan bo'lsa — boshlaymiz. Musiqa
+     ovoz bilan boshlanmaguncha tinglovchilar o'chirilmaydi. */
   function onGesture(e) {
-    if (musicPlaying || _userStopped) { removeGestureListeners(); return; }
+    if (_userStopped) { removeGestureListeners(); return; }
     /* Musiqa tugmasining o'zi bosilsa — uni btn handler boshqaradi */
     if (btn && e.target && btn.contains(e.target)) return;
-    _audio.play().then(() => {
+    _audio.muted = false;
+    _audio.volume = 0.35;
+    if (_audio.paused) {
+      _audio.play().then(() => {
+        musicPlaying = true;
+        updateMusicBtn();
+        removeGestureListeners();
+      }).catch(() => {});
+    } else {
+      /* Ovozsiz chalinayotgan edi — endi ovozi ochildi */
       musicPlaying = true;
       updateMusicBtn();
       removeGestureListeners();
-    }).catch(() => {});
+    }
   }
 
   /* Tinglovchilarni DARHOL ulaymiz (autoplay natijasini kutmasdan) —
@@ -235,21 +243,44 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('pointerup',   onGesture);
   document.addEventListener('click',       onGesture);
 
-  /* Autoplay urinib ko'ramiz — kompyuterda ko'pincha ishlaydi */
-  _audio.play().then(() => {
-    musicPlaying = true;
-    updateMusicBtn();
-    removeGestureListeners();
-  }).catch(() => { /* telefon blokladi — teginishda onGesture boshlaydi */ });
+  /* ?noauto=1 — telefon holatini kompyuterda sinash uchun:
+     ovozli autoplay o'tkazib yuboriladi */
+  const noAuto = /[?&]noauto/.test(location.search);
+
+  function mutedFallback() {
+    /* Ovozli autoplay bloklangan — musiqani OVOZSIZ boshlab
+       qo'yamiz (bunga brauzerlar ruxsat beradi). Birinchi
+       teginishda onGesture faqat ovozini ochadi — eng tez usul. */
+    _audio.muted = true;
+    _audio.play().catch(() => {});
+  }
+
+  if (noAuto) {
+    mutedFallback();
+  } else {
+    /* 1) Ovoz bilan autoplay — kompyuterda ishlaydi */
+    _audio.muted = false;
+    _audio.play().then(() => {
+      musicPlaying = true;
+      updateMusicBtn();
+      removeGestureListeners();
+    }).catch(mutedFallback);
+  }
 
   /* Musiqa tugmasi — play / pause */
   if (!btn) return;
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
     removeGestureListeners(); /* foydalanuvchi endi o'zi boshqaradi */
-    if (_audio.paused) {
+    if (_audio.paused || _audio.muted) {
+      /* Ovozsiz yoki to'xtagan — yoqamiz */
       _userStopped = false;
-      _audio.play().then(() => { musicPlaying = true; updateMusicBtn(); }).catch(() => {});
+      _audio.muted = false;
+      if (_audio.paused) {
+        _audio.play().then(() => { musicPlaying = true; updateMusicBtn(); }).catch(() => {});
+      } else {
+        musicPlaying = true;
+      }
     } else {
       _audio.pause();
       musicPlaying = false;
@@ -259,13 +290,23 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-/* unlock dan keyin ham chaqirilishi uchun export */
+/* unlock dan keyin ham chaqirilishi uchun export.
+   toy-taklifnoma dagi playAudio() bilan bir xil: gesture ichida
+   chaqirilganda ovozni ochib, to'g'ridan-to'g'ri play() qiladi. */
 function startMusic() {
-  if (!_audio || !_audio.paused || _userStopped) return;
-  _audio.play().then(() => {
+  if (!_audio || _userStopped) return;
+  _audio.muted = false;
+  _audio.volume = 0.35;
+  if (_audio.paused) {
+    _audio.play().then(() => {
+      musicPlaying = true;
+      updateMusicBtn();
+    }).catch(() => {});
+  } else {
+    /* Ovozsiz chalinayotgan edi — ovozi ochildi */
     musicPlaying = true;
     updateMusicBtn();
-  }).catch(() => {});
+  }
 }
 
 /* =============================================
