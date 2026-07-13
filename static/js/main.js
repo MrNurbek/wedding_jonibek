@@ -204,44 +204,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function removeGestureListeners() {
     document.removeEventListener('touchstart',  onGesture);
+    document.removeEventListener('touchmove',   onGesture);
     document.removeEventListener('touchend',    onGesture);
     document.removeEventListener('pointerdown', onGesture);
     document.removeEventListener('pointerup',   onGesture);
     document.removeEventListener('click',       onGesture);
+    window.removeEventListener('scroll',        onGesture);
   }
 
-  /* Har qanday birinchi teginishda: ovozsiz chalinayotgan bo'lsa —
-     ovozini ochamiz, to'xtab turgan bo'lsa — boshlaymiz. Musiqa
-     ovoz bilan boshlanmaguncha tinglovchilar o'chirilmaydi. */
+  /* Har qanday birinchi harakatda (tegish, surish, scroll) musiqani
+     ovoz bilan yoqishga urinamiz. Brauzer ba'zi hodisalarda ruxsat
+     bermasligi mumkin — shuning uchun ovoz HAQIQATAN chiqqanini
+     tekshiramiz; chiqmagan bo'lsa ovozsiz rejimga qaytarib, keyingi
+     harakatda yana urinamiz. */
   function onGesture(e) {
     if (_userStopped) { removeGestureListeners(); return; }
+    if (musicPlaying) { removeGestureListeners(); return; }
     /* Musiqa tugmasining o'zi bosilsa — uni btn handler boshqaradi */
-    if (btn && e.target && btn.contains(e.target)) return;
+    if (btn && e && e.target && e.target.nodeType === 1 && btn.contains(e.target)) return;
+
     _audio.muted = false;
     _audio.volume = 0.35;
-    if (_audio.paused) {
-      _audio.play().then(() => {
+    const p = _audio.play();
+    if (p && p.then) p.then(() => {}).catch(() => {});
+
+    /* Ovoz chindan ochildimi — biroz kutib tekshiramiz */
+    setTimeout(() => {
+      if (musicPlaying || _userStopped) return;
+      if (!_audio.paused && !_audio.muted) {
         musicPlaying = true;
         updateMusicBtn();
         removeGestureListeners();
-      }).catch(() => {});
-    } else {
-      /* Ovozsiz chalinayotgan edi — endi ovozi ochildi */
-      musicPlaying = true;
-      updateMusicBtn();
-      removeGestureListeners();
-    }
+      } else {
+        /* Brauzer bu hodisada ruxsat bermadi — ovozsiz davom etamiz,
+           keyingi teginish/scrollda qayta urinamiz */
+        _audio.muted = true;
+        _audio.play().catch(() => {});
+      }
+    }, 250);
   }
 
   /* Tinglovchilarni DARHOL ulaymiz (autoplay natijasini kutmasdan) —
-     har qanday birinchi teginishda musiqa boshlanadi. touchstart/
-     pointerdown — barmoq tekkan zahoti, touchend/pointerup/click —
-     ko'tarilganda. Qaysi biri brauzerda ruxsat etilsa, o'sha ishlaydi. */
+     har qanday birinchi harakatda musiqa yoqiladi: barmoq tekkanda
+     (touchstart/pointerdown), surganda va scrollda (touchmove/scroll),
+     ko'tarilganda (touchend/pointerup/click). Qaysi biri brauzerda
+     ruxsat etilsa, o'sha ishlaydi. */
   document.addEventListener('touchstart',  onGesture, { passive: true });
+  document.addEventListener('touchmove',   onGesture, { passive: true });
   document.addEventListener('touchend',    onGesture, { passive: true });
   document.addEventListener('pointerdown', onGesture);
   document.addEventListener('pointerup',   onGesture);
   document.addEventListener('click',       onGesture);
+  window.addEventListener('scroll',        onGesture, { passive: true });
 
   /* ?noauto=1 — telefon holatini kompyuterda sinash uchun:
      ovozli autoplay o'tkazib yuboriladi */
