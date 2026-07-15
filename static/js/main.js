@@ -161,8 +161,9 @@
   /* Mavjud document-level drag oqimi desktop va mobilda barqaror ishlaydi. */
   handle.addEventListener('mousedown', (e) => beginDrag(e.clientX));
   handle.addEventListener('touchstart', (e) => {
+    e.preventDefault();
     beginDrag(e.touches[0].clientX);
-  }, { passive: true });
+  }, { passive: false });
 
   document.addEventListener('mousemove', (e) => moveDrag(e.clientX));
   document.addEventListener('touchmove', (e) => {
@@ -172,7 +173,12 @@
   }, { passive: false });
 
   document.addEventListener('mouseup', endDrag);
-  document.addEventListener('touchend', endDrag);
+  document.addEventListener('touchend', (e) => {
+    if (dragging && e.changedTouches.length) {
+      moveDrag(e.changedTouches[0].clientX);
+    }
+    endDrag();
+  });
   document.addEventListener('touchcancel', endDrag);
 })();
 
