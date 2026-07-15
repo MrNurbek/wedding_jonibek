@@ -7,6 +7,8 @@
 
 /* ---------- CSS Variables ---------- */
 :root {
+  color-scheme: only light;
+
   --bordo:       #6B1A2A;
   --deep-red:    #8B2635;
   --rose:        #C4536A;
