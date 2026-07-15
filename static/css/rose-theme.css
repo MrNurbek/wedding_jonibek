@@ -304,6 +304,7 @@ ul { list-style: none; }
   cursor: pointer;
   animation: fade-up 1.1s ease 2s both;
   user-select: none;
+  touch-action: none;
 }
 .unlock-fill {
   position: absolute; left: 0; top: 0; bottom: 0;

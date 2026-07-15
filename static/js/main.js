@@ -107,7 +107,7 @@
   function unlock() {
     if (!cover.classList.contains('unlocking')) {
       cover.classList.add('unlocking');
-      startMusic(); /* ochish harakatining o'zida musiqani boshlaymiz */
+      confirmUnlockMusic();
       flash.classList.add('active');
       setTimeout(() => {
         flash.classList.remove('active');
@@ -118,7 +118,6 @@
           document.querySelectorAll('.locked-hidden').forEach(el => {
             el.classList.remove('locked-hidden');
           });
-          startMusic();
           setTimeout(function() {
             if (typeof window.parallaxTick === 'function') window.parallaxTick();
           }, 100);
@@ -127,63 +126,95 @@
     }
   }
 
-  /* Slayder ushlangan zahoti musiqani boshlashga urinamiz —
-     ochish knopkasiga bevosita bog'langan */
-  handle.addEventListener('mousedown', e => { dragging = true; startX = e.clientX - currentX; startMusic(); });
-  handle.addEventListener('touchstart', e => { dragging = true; startX = e.touches[0].clientX - currentX; startMusic(); }, { passive: true });
+  function beginDrag(clientX) {
+    if (dragging) return;
+    dragging = true;
+    startX = clientX - currentX;
+    startMusic(); /* audio.play() aynan foydalanuvchi hodisasi ichida */
+  }
 
-  document.addEventListener('mousemove', e => {
+  function moveDrag(clientX) {
     if (!dragging) return;
-    currentX = e.clientX - startX;
+    currentX = clientX - startX;
     setPos(currentX);
-  });
+  }
 
-  document.addEventListener('touchmove', e => {
-    if (!dragging) return;
-    currentX = e.touches[0].clientX - startX;
-    setPos(currentX);
-  }, { passive: true });
-
-  document.addEventListener('mouseup', () => {
+  function endDrag() {
     if (!dragging) return;
     dragging = false;
-    /* Slayder ochilgan bo'lsa — musiqani haqiqiy teginish ichida boshlaymiz */
-    if (cover.classList.contains('unlocking')) startMusic();
-    if (currentX < maxDrag() * 0.9) {
-      currentX = 0;
-      handle.style.transition = 'left 0.3s ease';
-      fill.style.transition = 'width 0.3s ease';
-      setPos(0);
-      setTimeout(() => {
-        handle.style.transition = '';
-        fill.style.transition = '';
-      }, 300);
+    if (currentX >= maxDrag() * 0.9) {
+      /* pointerup/touchend ham real gesture: kerak bo'lsa shu zahoti qayta urinadi. */
+      confirmUnlockMusic();
+      return;
     }
-  });
 
-  document.addEventListener('touchend', () => {
-    if (!dragging) return;
-    dragging = false;
-    /* Telefonda: barmoq ko'tarilgan zahoti — teginish ruxsati ichida — musiqa boshlanadi */
-    if (cover.classList.contains('unlocking')) startMusic();
-    if (currentX < maxDrag() * 0.9) {
-      currentX = 0;
-      handle.style.transition = 'left 0.3s ease';
-      fill.style.transition = 'width 0.3s ease';
-      setPos(0);
-      setTimeout(() => {
-        handle.style.transition = '';
-        fill.style.transition = '';
-      }, 300);
-    }
-  });
+    currentX = 0;
+    handle.style.transition = 'left 0.3s ease';
+    fill.style.transition = 'width 0.3s ease';
+    setPos(0);
+    setTimeout(() => {
+      handle.style.transition = '';
+      fill.style.transition = '';
+    }, 300);
+  }
+
+  if (window.PointerEvent) {
+    let activePointerId = null;
+
+    handle.addEventListener('pointerdown', (e) => {
+      activePointerId = e.pointerId;
+      handle.setPointerCapture?.(e.pointerId);
+      beginDrag(e.clientX); /* iOS/Android: play() shu call stack ichida */
+    });
+
+    handle.addEventListener('pointermove', (e) => {
+      if (e.pointerId !== activePointerId) return;
+      e.preventDefault();
+      moveDrag(e.clientX);
+    });
+
+    const finishPointer = (e) => {
+      if (e.pointerId !== activePointerId) return;
+      if (handle.hasPointerCapture?.(e.pointerId)) {
+        handle.releasePointerCapture(e.pointerId);
+      }
+      activePointerId = null;
+      endDrag();
+    };
+
+    handle.addEventListener('pointerup', finishPointer);
+    handle.addEventListener('pointercancel', finishPointer);
+  } else {
+    /* Eski Safari/Android uchun fallback. */
+    let ignoreMouseUntil = 0;
+    handle.addEventListener('touchstart', (e) => {
+      ignoreMouseUntil = Date.now() + 800;
+      beginDrag(e.touches[0].clientX);
+    }, { passive: true });
+    handle.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      moveDrag(e.touches[0].clientX);
+    }, { passive: false });
+    handle.addEventListener('touchend', endDrag);
+    handle.addEventListener('touchcancel', endDrag);
+
+    handle.addEventListener('mousedown', (e) => {
+      if (Date.now() < ignoreMouseUntil) return;
+      beginDrag(e.clientX);
+    });
+    document.addEventListener('mousemove', (e) => moveDrag(e.clientX));
+    document.addEventListener('mouseup', endDrag);
+  }
 })();
 
 /* =============================================
    MUSIQA
    ============================================= */
-let _audio = null;
+let _audio = document.getElementById('bg-music');
 let musicPlaying = false;
+let _musicPlayPromise = null;
+let _unlockConfirmed = false;
+let _musicRetryArmed = false;
 
 function updateMusicBtn() {
   const btn = document.getElementById('music-btn');
@@ -194,104 +225,28 @@ function updateMusicBtn() {
 
 let _userStopped = false; /* foydalanuvchi tugma orqali o'zi to'xtatgan */
 
-document.addEventListener('DOMContentLoaded', () => {
-  _audio = document.getElementById('bg-music');
+function initMusicControls() {
   if (!_audio) return;
   _audio.loop = true;
   _audio.volume = 0.35;
 
   const btn = document.getElementById('music-btn');
 
-  function removeGestureListeners() {
-    document.removeEventListener('touchstart',  onGesture);
-    document.removeEventListener('touchmove',   onGesture);
-    document.removeEventListener('touchend',    onGesture);
-    document.removeEventListener('pointerdown', onGesture);
-    document.removeEventListener('pointerup',   onGesture);
-    document.removeEventListener('click',       onGesture);
-    window.removeEventListener('scroll',        onGesture);
-  }
-
-  /* Har qanday birinchi harakatda (tegish, surish, scroll) musiqani
-     ovoz bilan yoqishga urinamiz. Brauzer ba'zi hodisalarda ruxsat
-     bermasligi mumkin — shuning uchun ovoz HAQIQATAN chiqqanini
-     tekshiramiz; chiqmagan bo'lsa ovozsiz rejimga qaytarib, keyingi
-     harakatda yana urinamiz. */
-  function onGesture(e) {
-    if (_userStopped) { removeGestureListeners(); return; }
-    if (musicPlaying) { removeGestureListeners(); return; }
-    /* Musiqa tugmasining o'zi bosilsa — uni btn handler boshqaradi */
-    if (btn && e && e.target && e.target.nodeType === 1 && btn.contains(e.target)) return;
-
-    _audio.muted = false;
-    _audio.volume = 0.35;
-    const p = _audio.play();
-    if (p && p.then) p.then(() => {}).catch(() => {});
-
-    /* Ovoz chindan ochildimi — biroz kutib tekshiramiz */
-    setTimeout(() => {
-      if (musicPlaying || _userStopped) return;
-      if (!_audio.paused && !_audio.muted) {
-        musicPlaying = true;
-        updateMusicBtn();
-        removeGestureListeners();
-      } else {
-        /* Brauzer bu hodisada ruxsat bermadi — ovozsiz davom etamiz,
-           keyingi teginish/scrollda qayta urinamiz */
-        _audio.muted = true;
-        _audio.play().catch(() => {});
-      }
-    }, 250);
-  }
-
-  /* Tinglovchilarni DARHOL ulaymiz (autoplay natijasini kutmasdan) —
-     har qanday birinchi harakatda musiqa yoqiladi: barmoq tekkanda
-     (touchstart/pointerdown), surganda va scrollda (touchmove/scroll),
-     ko'tarilganda (touchend/pointerup/click). Qaysi biri brauzerda
-     ruxsat etilsa, o'sha ishlaydi. */
-  document.addEventListener('touchstart',  onGesture, { passive: true });
-  document.addEventListener('touchmove',   onGesture, { passive: true });
-  document.addEventListener('touchend',    onGesture, { passive: true });
-  document.addEventListener('pointerdown', onGesture);
-  document.addEventListener('pointerup',   onGesture);
-  document.addEventListener('click',       onGesture);
-  window.addEventListener('scroll',        onGesture, { passive: true });
-
-  /* ?noauto=1 — telefon holatini kompyuterda sinash uchun:
-     ovozli autoplay o'tkazib yuboriladi */
-  const noAuto = /[?&]noauto/.test(location.search);
-
-  function mutedFallback() {
-    /* Ovozli autoplay bloklangan — musiqani OVOZSIZ boshlab
-       qo'yamiz (bunga brauzerlar ruxsat beradi). Birinchi
-       teginishda onGesture faqat ovozini ochadi — eng tez usul. */
-    _audio.muted = true;
-    _audio.play().catch(() => {});
-  }
-
-  if (noAuto) {
-    mutedFallback();
-  } else {
-    /* 1) Ovoz bilan autoplay — kompyuterda ishlaydi */
-    _audio.muted = false;
-    _audio.play().then(() => {
-      musicPlaying = true;
-      updateMusicBtn();
-      removeGestureListeners();
-    }).catch(mutedFallback);
-  }
-
   /* Musiqa tugmasi — play / pause */
   if (!btn) return;
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
-    removeGestureListeners(); /* foydalanuvchi endi o'zi boshqaradi */
     if (_audio.paused || _audio.muted) {
       /* Ovozsiz yoki to'xtagan — yoqamiz */
       _userStopped = false;
       _audio.muted = false;
       if (_audio.paused) {
-        _audio.play().then(() => { musicPlaying = true; updateMusicBtn(); }).catch(() => {});
+        const playPromise = _audio.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => { musicPlaying = true; updateMusicBtn(); }).catch((error) => {
+            console.warn("Musiqani ishga tushirish imkoni bo'lmadi:", error);
+          });
+        }
       } else {
         musicPlaying = true;
       }
@@ -302,25 +257,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     updateMusicBtn();
   });
-});
+}
+
+initMusicControls();
 
 /* unlock dan keyin ham chaqirilishi uchun export.
    toy-taklifnoma dagi playAudio() bilan bir xil: gesture ichida
    chaqirilganda ovozni ochib, to'g'ridan-to'g'ri play() qiladi. */
 function startMusic() {
   if (!_audio || _userStopped) return;
+  if (_musicPlayPromise || !_audio.paused) return;
+  _audio.currentTime = 0;
   _audio.muted = false;
   _audio.volume = 0.35;
-  if (_audio.paused) {
-    _audio.play().then(() => {
+  const playPromise = _audio.play();
+  if (playPromise !== undefined) {
+    _musicPlayPromise = playPromise;
+    playPromise.then(() => {
       musicPlaying = true;
       updateMusicBtn();
-    }).catch(() => {});
-  } else {
-    /* Ovozsiz chalinayotgan edi — ovozi ochildi */
-    musicPlaying = true;
-    updateMusicBtn();
+    }).catch((error) => {
+      console.warn("Mobil qurilmada musiqa ishga tushmadi:", error);
+      armMusicRetry();
+    }).finally(() => {
+      _musicPlayPromise = null;
+    });
   }
+}
+
+function confirmUnlockMusic() {
+  _unlockConfirmed = true;
+  if (!_audio || _userStopped) return;
+  if (_audio.paused) startMusic();
+}
+
+function armMusicRetry() {
+  if (_musicRetryArmed || !_audio || _userStopped) return;
+  _musicRetryArmed = true;
+
+  const retryFromGesture = (event) => {
+    const musicBtn = document.getElementById('music-btn');
+    if (musicBtn && event?.target && musicBtn.contains(event.target)) return;
+    document.removeEventListener('pointerdown', retryFromGesture, true);
+    document.removeEventListener('touchstart', retryFromGesture, true);
+    document.removeEventListener('click', retryFromGesture, true);
+    _musicRetryArmed = false;
+    startMusic();
+  };
+
+  document.addEventListener('pointerdown', retryFromGesture, true);
+  document.addEventListener('touchstart', retryFromGesture, { capture: true, passive: true });
+  document.addEventListener('click', retryFromGesture, true);
 }
 
 /* =============================================
@@ -510,4 +497,3 @@ function startMusic() {
     document.getElementById('success-modal').classList.remove('show');
   });
 })();
-
