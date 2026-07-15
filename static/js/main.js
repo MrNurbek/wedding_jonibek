@@ -158,53 +158,22 @@
     }, 300);
   }
 
-  if (window.PointerEvent) {
-    let activePointerId = null;
+  /* Mavjud document-level drag oqimi desktop va mobilda barqaror ishlaydi. */
+  handle.addEventListener('mousedown', (e) => beginDrag(e.clientX));
+  handle.addEventListener('touchstart', (e) => {
+    beginDrag(e.touches[0].clientX);
+  }, { passive: true });
 
-    handle.addEventListener('pointerdown', (e) => {
-      activePointerId = e.pointerId;
-      handle.setPointerCapture?.(e.pointerId);
-      beginDrag(e.clientX); /* iOS/Android: play() shu call stack ichida */
-    });
+  document.addEventListener('mousemove', (e) => moveDrag(e.clientX));
+  document.addEventListener('touchmove', (e) => {
+    if (!dragging) return;
+    e.preventDefault();
+    moveDrag(e.touches[0].clientX);
+  }, { passive: false });
 
-    handle.addEventListener('pointermove', (e) => {
-      if (e.pointerId !== activePointerId) return;
-      e.preventDefault();
-      moveDrag(e.clientX);
-    });
-
-    const finishPointer = (e) => {
-      if (e.pointerId !== activePointerId) return;
-      if (handle.hasPointerCapture?.(e.pointerId)) {
-        handle.releasePointerCapture(e.pointerId);
-      }
-      activePointerId = null;
-      endDrag();
-    };
-
-    handle.addEventListener('pointerup', finishPointer);
-    handle.addEventListener('pointercancel', finishPointer);
-  } else {
-    /* Eski Safari/Android uchun fallback. */
-    let ignoreMouseUntil = 0;
-    handle.addEventListener('touchstart', (e) => {
-      ignoreMouseUntil = Date.now() + 800;
-      beginDrag(e.touches[0].clientX);
-    }, { passive: true });
-    handle.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-      moveDrag(e.touches[0].clientX);
-    }, { passive: false });
-    handle.addEventListener('touchend', endDrag);
-    handle.addEventListener('touchcancel', endDrag);
-
-    handle.addEventListener('mousedown', (e) => {
-      if (Date.now() < ignoreMouseUntil) return;
-      beginDrag(e.clientX);
-    });
-    document.addEventListener('mousemove', (e) => moveDrag(e.clientX));
-    document.addEventListener('mouseup', endDrag);
-  }
+  document.addEventListener('mouseup', endDrag);
+  document.addEventListener('touchend', endDrag);
+  document.addEventListener('touchcancel', endDrag);
 })();
 
 /* =============================================
